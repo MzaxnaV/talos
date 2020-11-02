@@ -1,4 +1,4 @@
-from telegram.ext import CommandHandler
+from telegram.ext import CommandHandler, Filters
 from ..lib.common import db, get_captcha, get_mention
 from tinydb import Query
 
@@ -33,4 +33,6 @@ def resolve(update,ctx):
         parse_mode="MARKDOWN"
     )
 
-handler = CommandHandler('start', resolve)
+handler = CommandHandler(command='start',
+                         callback=resolve,
+                         filters=Filters.private)
