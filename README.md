@@ -9,6 +9,8 @@ newly joining members of your group  chat.
 ```
 RULES_URI=https://raw.githubusercontent.com/1337neo/pythonindia/master/rules/languages/english/rules.json
 ```
+3) Make sure to set 'BOT_USERNAME' in the .env file. It is used to check if
+updates should be ignored or processed
 
 ### Other
 1)  On paper this bot should seamlessly work across multiple groups, but with a single set of rules. 
