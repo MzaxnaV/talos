@@ -1,6 +1,7 @@
 from telegram.ext import MessageHandler, Filters
 from telegram import  InlineKeyboardMarkup, InlineKeyboardButton
 from ..lib.common import get_captcha, db, mute_perms, get_mention
+from tinydb import Query
 
 def handle(update, ctx):
     group_id = update.effective_chat.id
@@ -34,12 +35,18 @@ def handle(update, ctx):
         parse_mode="MARKDOWN"
     )
 
-    db.insert({
-        "group_id":group_id,
-        "user_id":user_id,
-        "solved":False,
-        "valid_answer":None,
-        "message_id": msg.message_id
-    })
+    User = Query()
+    db.upsert(
+        {
+            "group_id":group_id,
+            "user_id":user_id,
+            "solved":False,
+            "valid_answer":None,
+            "message_id": msg.message_id
+        },
+        (
+            (User.group_id == group_id) & ( User.user_id == user_id )
+        )
+    )
 
 handler = MessageHandler(Filters.status_update.new_chat_members, handle)
