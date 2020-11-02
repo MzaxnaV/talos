@@ -1,6 +1,6 @@
 from telegram.ext import CallbackQueryHandler
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from ..lib.common import db, get_captcha, unmute_perms
+from ..lib.common import db, get_captcha, unmute_perms, okay_keyboard
 from tinydb import Query
 
 def resolve(update, ctx):
@@ -23,8 +23,11 @@ def resolve(update, ctx):
     # User is either not part of group or 
     # User has not pm'd the bot for captcha yet
 
-    if not result  or not result[0]['valid_answer']:
-        return None
+    if not result:
+        update.callback_query.edit_message_text(
+            text='Oops, looks like you left the group',
+            reply_markup=okay_keyboard
+        )
 
     # Wrong answer 
     if answer != result[0]['valid_answer']:
@@ -53,14 +56,10 @@ def resolve(update, ctx):
         permissions=unmute_perms
     )
 
-    keyboard = InlineKeyboardMarkup([
-        [ InlineKeyboardButton(text='Okay', callback_data='foo') ]
-    ])
-
     # Now inform the cunt
     update.callback_query.edit_message_text(
         text="Captcha verified. You have been unmuted.",
-        reply_markup=keyboard
+        reply_markup=okay_keyboard
     )
 
     try:

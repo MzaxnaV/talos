@@ -32,6 +32,11 @@ unmute_perms = ChatPermissions(
     can_send_other_messages=False
 )
 
+
+okay_keyboard = InlineKeyboardMarkup([
+    [ InlineKeyboardButton(text='Okay', callback_data='foo') ]
+])
+
 def get_mention(user):
     name = user.username if user.username else user.id
     return mention_markdown(user_id=user.id, name=str(name), version=2)
