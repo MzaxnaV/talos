@@ -6,8 +6,6 @@ from .lib import common
 from .events import new_member, start, verify_captcha, left_member
 
 token = os.getenv('BOT_TOKEN')
-rules_uri = os.getenv('RULES_URI')
-
 
 updater = Updater(token=token, use_context=True)
 dispatcher = updater.dispatcher

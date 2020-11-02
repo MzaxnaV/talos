@@ -9,7 +9,7 @@ import random
 import re
 
 db = TinyDB('.userdata')
-
+me = os.getenv('BOT_USERNAME')
 rules_uri = os.getenv('RULES_URI')
 rules = json.loads(requests.get(rules_uri).text)
 qstn = ('Hello there,\nYou have been muted.\nTo ensure smooth interaction'
@@ -36,6 +36,7 @@ unmute_perms = ChatPermissions(
 okay_keyboard = InlineKeyboardMarkup([
     [ InlineKeyboardButton(text='Okay', callback_data='foo') ]
 ])
+
 
 def get_mention(user):
     name = user.username if user.username else user.id

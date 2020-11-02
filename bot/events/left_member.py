@@ -1,5 +1,5 @@
 from telegram.ext import MessageHandler, Filters
-from ..lib.common import  db
+from ..lib.common import  db, me
 from tinydb import Query
 
 def handle(update, ctx):
@@ -8,6 +8,10 @@ def handle(update, ctx):
     # still remains in the group and must be removed
     # If the captcha has not been solved, the database entry
     # still exists and must be removed
+
+    # check if self and ignore
+    if update.message.left_chat_member.username == me:
+        return None
 
     group_id = update.effective_chat.id
     user_id = update.message.left_chat_member.id
