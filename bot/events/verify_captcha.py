@@ -28,6 +28,7 @@ def resolve(update, ctx):
             text='Oops, looks like you left the group',
             reply_markup=okay_keyboard
         )
+        return None
 
     # Wrong answer 
     if answer != result[0]['valid_answer']:
