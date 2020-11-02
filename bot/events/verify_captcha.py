@@ -56,17 +56,32 @@ def resolve(update, ctx):
     keyboard = InlineKeyboardMarkup([
         [ InlineKeyboardButton(text='Okay', callback_data='foo') ]
     ])
+
     # Now inform the cunt
     update.callback_query.edit_message_text(
         text="Captcha verified. You have been unmuted.",
         reply_markup=keyboard
     )
 
+    try:
     # Delete initial message in group
-    update.callback_query.bot.delete_message(
-        chat_id=group_id,
-        message_id=result[0]['message_id']
-    )
+        update.callback_query.bot.delete_message(
+            chat_id=group_id,
+            message_id=result[0]['message_id']
+        )
+    except Exception as e:
+        print("deleting initial message after verify failed: ")
+        print(str(e))
+
+    # Delete the database entry
+    try:
+        db.remove(
+            (User.group_id == group_id) & ( User.user_id == user_id )
+        )
+    except Exception as e:
+        print("deleting  database entry after verify failed:")
+        print(str(e))
+
 
 handler = CallbackQueryHandler(callback=resolve,
                                pattern='verify_captcha_')
