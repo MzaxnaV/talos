@@ -1,13 +1,13 @@
 from ..config import BOT_USERNAME, RULES_URI_HUMAN
 from telegram.ext import MessageHandler, Filters
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
-from ..lib.common import db, mute_perms, get_mention, me
+from ..lib.common import db, mute_perms, get_mention
 from tinydb import Query
 
 
 def handle(update, ctx):
     # Ignore if self
-    if update.message.new_chat_members[0].username == me:
+    if update.message.new_chat_members[0].username == BOT_USERNAME:
         return None
 
     group_id = update.effective_chat.id

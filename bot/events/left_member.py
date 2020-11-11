@@ -1,5 +1,6 @@
 from telegram.ext import MessageHandler, Filters
-from ..lib.common import db, me
+from ..config import BOT_USERNAME
+from ..lib.common import db
 from tinydb import Query
 
 
@@ -11,7 +12,7 @@ def handle(update, ctx):
     # still exists and must be removed
 
     # check if self and ignore
-    if update.message.left_chat_member.username == me:
+    if update.message.left_chat_member.username == BOT_USERNAME:
         return None
 
     group_id = update.effective_chat.id
