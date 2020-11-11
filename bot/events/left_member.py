@@ -1,6 +1,7 @@
 from telegram.ext import MessageHandler, Filters
-from ..lib.common import  db, me
+from ..lib.common import db, me
 from tinydb import Query
+
 
 def handle(update, ctx):
     # This method is inteded as a clean up
@@ -22,7 +23,7 @@ def handle(update, ctx):
     # This is done in case captcha has not been
     # solved.
     result = db.search(
-        (User.group_id == group_id) & ( User.user_id == user_id )
+        (User.group_id == group_id) & (User.user_id == user_id)
     )
     if(len(result) == 0):
         return None
@@ -40,10 +41,11 @@ def handle(update, ctx):
     # Attempt to delete the database entry
     try:
         db.remove(
-            (User.group_id == group_id) & ( User.user_id == user_id )
+            (User.group_id == group_id) & (User.user_id == user_id)
         )
     except Exception as e:
         print("Deleting database  record failed: ")
         print(str(e))
+
 
 handler = MessageHandler(Filters.status_update.left_chat_member, handle)

@@ -1,26 +1,24 @@
 from telegram.ext import CallbackQueryHandler
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from ..lib.common import db, get_captcha, unmute_perms, okay_keyboard
 from tinydb import Query
+
 
 def resolve(update, ctx):
     try:
         group_id = int(update.callback_query.data.split('_')[2])
         answer = int(update.callback_query.data.split('_')[3])
-    except:
-        # invalid group id? 
+    except Exception:
+        # invalid group id?
         return None
 
     user_id = update.effective_user.id
-    msg = update.callback_query.message.text
     User = Query()
 
-
-    result =  db.search(
-        (User.group_id == group_id) & ( User.user_id == user_id )
+    result = db.search(
+        (User.group_id == group_id) & (User.user_id == user_id)
     )
 
-    # User is either not part of group or 
+    # User is either not part of group or
     # User has not pm'd the bot for captcha yet
 
     if not result:
@@ -30,15 +28,15 @@ def resolve(update, ctx):
         )
         return None
 
-    # Wrong answer 
+    # Wrong answer
     if answer != result[0]['valid_answer']:
-        captcha =  get_captcha(group_id, user_id)
+        captcha = get_captcha(group_id, user_id)
 
         # Update database with new captcha answer
         db.update(
-            {"valid_answer" : captcha['valid_answer']},
+            {"valid_answer": captcha['valid_answer']},
             (
-                (User.group_id == group_id) & ( User.user_id == user_id )
+                (User.group_id == group_id) & (User.user_id == user_id)
             )
         )
 
@@ -64,7 +62,7 @@ def resolve(update, ctx):
     )
 
     try:
-    # Delete initial message in group
+        # Delete initial message in group
         update.callback_query.bot.delete_message(
             chat_id=group_id,
             message_id=result[0]['message_id']
@@ -76,7 +74,7 @@ def resolve(update, ctx):
     # Delete the database entry
     try:
         db.remove(
-            (User.group_id == group_id) & ( User.user_id == user_id )
+            (User.group_id == group_id) & (User.user_id == user_id)
         )
     except Exception as e:
         print("deleting  database entry after verify failed:")

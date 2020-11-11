@@ -6,7 +6,6 @@ import os
 import requests
 import json
 import random
-import re
 
 db = TinyDB('.userdata')
 me = os.getenv('BOT_USERNAME')
@@ -32,9 +31,8 @@ unmute_perms = ChatPermissions(
     can_send_other_messages=False
 )
 
-
 okay_keyboard = InlineKeyboardMarkup([
-    [ InlineKeyboardButton(text='Okay', callback_data='foo') ]
+    [InlineKeyboardButton(text='Okay', callback_data='self_destruct')]
 ])
 
 
@@ -42,8 +40,9 @@ def get_mention(user):
     name = user.username if user.username else user.id
     return mention_markdown(user_id=user.id, name=str(name), version=2)
 
+
 def get_captcha(group_id, user_id):
-    question = random.choice(range(0,len(rules)))
+    question = random.choice(range(0, len(rules)))
     answer = question + 1
     choices = [answer]
 
@@ -54,16 +53,17 @@ def get_captcha(group_id, user_id):
 
     random.shuffle(choices)
 
-    choices_kb =[
+    choices_kb = [
         [
             InlineKeyboardButton(text=choice,
-                                 callback_data=f'verify_captcha_{group_id}_{choice}')
+                                 callback_data=(f'verify_captcha_{group_id}_'
+                                                f'{choice}'))
         ]
         for choice in choices
     ]
 
     return {
-        'question' : qstn.format(question=rules[question]),
+        'question': qstn.format(question=rules[question]),
         'choices': InlineKeyboardMarkup(choices_kb),
         'valid_answer': answer
     }

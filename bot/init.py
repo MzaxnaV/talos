@@ -1,10 +1,9 @@
 import os
 from dotenv import load_dotenv
-load_dotenv()
 from telegram.ext import Updater
-from .lib import common
 from .events import new_member, start, verify_captcha, left_member
 
+load_dotenv()
 token = os.getenv('BOT_TOKEN')
 
 updater = Updater(token=token, use_context=True)
