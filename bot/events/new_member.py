@@ -1,3 +1,4 @@
+from ..config import BOT_USERNAME
 from telegram.ext import MessageHandler, Filters
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 from ..lib.common import db, mute_perms, get_mention, me
@@ -18,7 +19,7 @@ def handle(update, ctx):
         permissions=mute_perms
     )
 
-    url = f't.me/rulescaptcha_bot?start={update.effective_chat.id}'
+    url = f't.me/{BOT_USERNAME}?start={update.effective_chat.id}'
     rules_url = 't.me/pyindiarules'
     keyboard = [
         [

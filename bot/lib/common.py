@@ -2,14 +2,14 @@ from telegram import (InlineKeyboardButton, InlineKeyboardMarkup,
                       ChatPermissions)
 from telegram.utils.helpers import mention_markdown
 from tinydb import TinyDB
-import os
+from ..config import RULES_URI, BOT_USERNAME
 import requests
 import json
 import random
 
 db = TinyDB('.userdata')
-me = os.getenv('BOT_USERNAME')
-rules_uri = os.getenv('RULES_URI')
+me = BOT_USERNAME
+rules_uri = RULES_URI
 rules = json.loads(requests.get(rules_uri).text)
 qstn = ('Hello there,\nYou have been muted.\nTo ensure smooth interaction'
         ' in this community, you are required to read the rules and solve'
