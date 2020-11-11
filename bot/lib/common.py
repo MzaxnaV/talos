@@ -2,20 +2,13 @@ from telegram import (InlineKeyboardButton, InlineKeyboardMarkup,
                       ChatPermissions)
 from telegram.utils.helpers import mention_markdown
 from tinydb import TinyDB
-from ..config import RULES_URI, BOT_USERNAME
+from ..config import RULES_URI, START_MSG
 import requests
 import json
 import random
 
 db = TinyDB('.userdata')
-me = BOT_USERNAME
-rules_uri = RULES_URI
-rules = json.loads(requests.get(rules_uri).text)
-qstn = ('Hello there,\nYou have been muted.\nTo ensure smooth interaction'
-        ' in this community, you are required to read the rules and solve'
-        ' this captcha in order to verify that you have done the  same.\n'
-        'At which number is the following rule listed in @pyindiarules\n'
-        '\n*{question}*')
+rules = json.loads(requests.get(RULES_URI).text)
 
 mute_perms = ChatPermissions(
     can_send_messages=False,
@@ -63,7 +56,7 @@ def get_captcha(group_id, user_id):
     ]
 
     return {
-        'question': qstn.format(question=rules[question]),
+        'question': START_MSG.format(question=rules[question]),
         'choices': InlineKeyboardMarkup(choices_kb),
         'valid_answer': answer
     }

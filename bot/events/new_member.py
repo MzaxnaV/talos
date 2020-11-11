@@ -1,4 +1,4 @@
-from ..config import BOT_USERNAME
+from ..config import BOT_USERNAME, RULES_URI_HUMAN
 from telegram.ext import MessageHandler, Filters
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 from ..lib.common import db, mute_perms, get_mention, me
@@ -20,13 +20,12 @@ def handle(update, ctx):
     )
 
     url = f't.me/{BOT_USERNAME}?start={update.effective_chat.id}'
-    rules_url = 't.me/pyindiarules'
     keyboard = [
         [
             InlineKeyboardButton(text='Click to unmute', url=url)
         ],
         [
-            InlineKeyboardButton(text='Rules', url=rules_url)
+            InlineKeyboardButton(text='Rules', url=RULES_URI_HUMAN)
         ]
     ]
     user_mention = get_mention(update.effective_user)
