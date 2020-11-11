@@ -16,7 +16,7 @@ def resolve(update, ctx):
         (User.group_id == group_id) & (User.user_id == user_id)
     )
     if not len(user):
-        update.message.reply_text(("You do not have any capthas to solve"
+        update.message.reply_text(("You do not have any captcha to solve"
                                   " right now in this group"))
         return None
 
