@@ -7,6 +7,7 @@ import requests
 import json
 import random
 
+
 db = TinyDB('.userdata')
 rules = json.loads(requests.get(RULES_URI).text)
 

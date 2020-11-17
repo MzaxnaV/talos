@@ -8,6 +8,8 @@ RULES_URI = os.getenv('RULES_URI')
 RULES_URI_HUMAN = os.getenv('RULES_URI_HUMAN')
 ENABLE_WELCOME_MSG = bool(os.getenv('ENABLE_WELCOME_MSG'))
 
+QUESTION_QUANTITY = int(os.getenv('QUESTION_QUANTITY'))
+
 WELCOME_MSG = ('Hello {username}, welcome to the group. You have been muted.'
                '\nPlease follow the instructions to unmute yourself.')
 
