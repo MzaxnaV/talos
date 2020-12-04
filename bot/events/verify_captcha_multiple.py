@@ -68,8 +68,15 @@ def resolve(update, ctx):
 
 def kick(update, group_id):
     # Kick user
-    print('kicked')
-    return
+    try:
+        update.callback_query.bot.kick_chat_member(
+            chat_id=group_id,
+            user_id=update.effective_user.id
+         )
+    except Exception as e:
+        print(str(e))
+
+    return None
 
 
 def unmute(update, group_id):
