@@ -7,6 +7,6 @@ jobq.set_dispatcher(dispatcher)
 
 dispatcher.add_handler(new_member.handler)
 dispatcher.add_handler(start.handler)
-dispatcher.add_handler(verify_captcha.handler)
+# dispatcher.add_handler(verify_captcha.handler)
 dispatcher.add_handler(left_member.handler)
-dispatcher.add_handler(verify_captcha_multiple.test_handler)
+dispatcher.add_handler(verify_captcha_multiple.handler)
