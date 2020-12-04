@@ -1,7 +1,7 @@
 from telegram import (InlineKeyboardButton, InlineKeyboardMarkup,
                       ChatPermissions)
 from telegram.utils.helpers import mention_markdown
-from tinydb import TinyDB
+from tinydb import TinyDB, Query
 from ..config import RULES_URI, START_MSG
 import requests
 import json
@@ -33,6 +33,16 @@ okay_keyboard = InlineKeyboardMarkup([
 def get_mention(user):
     name = user.username if user.username else user.id
     return mention_markdown(user_id=user.id, name=str(name), version=2)
+
+
+# Check if a database entry  exists with the given
+# Group id and user id
+def user_exists(user_id, group_id):
+    User = Query()
+    user = db.search(
+        (User.group_id == group_id) & (User.user_id == user_id)
+    )
+    return len(user)
 
 
 def get_captcha(group_id, user_id):
