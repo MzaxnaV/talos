@@ -71,3 +71,38 @@ def get_captcha(group_id, user_id):
         'choices': InlineKeyboardMarkup(choices_kb),
         'valid_answer': answer
     }
+
+
+def clean(update, group_id=None):
+    User = Query()
+    if not group_id:
+        group_id = update.effecitve_chat.id
+
+    try:
+        bot = update.callback_query.bot
+    except AttributeError:
+        bot = update.message.bot
+
+    try:
+        user_id = update.left_chat_member.id
+    except AttributeError:
+        user_id = update.effective_chat.id
+
+    result = db.search(
+        (User.group_id == group_id) & (User.user_id == user_id)
+    )
+    result = result[0]
+
+    # Attempt to remove welcome message
+    try:
+        bot.delete_message(
+            chat_id=group_id,
+            message_id=result['message_id']
+        )
+    except Exception as e:
+        print(str(e))
+
+    # Remove database entry
+    db.remove(
+        doc_ids=[result['doc_id']]
+    )
