@@ -34,9 +34,10 @@ class Captcha:
         self.wrong = self.wrong + num
 
     def __eq__(self, val):
-        if val != self.answers[self.iteration]:
+        if int(val) == self.answers[self.iteration]:
+            return True
+        else:
             raise WrongAnswerError
-        return True
 
     def has_failed(self):
         return (self.wrong >= self.errors_allowed)
