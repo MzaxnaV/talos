@@ -43,8 +43,6 @@ def handle(update, ctx):
         {
             "group_id": group_id,
             "user_id": user_id,
-            "solved": False,
-            "valid_answer": None,
             "message_id": msg.message_id
         },
         (
