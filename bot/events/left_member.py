@@ -1,6 +1,6 @@
 from telegram.ext import MessageHandler, Filters
 from ..config import BOT_USERNAME
-from ..lib.common import db
+from ..lib.common import db, clean
 from tinydb import Query
 
 
@@ -15,8 +15,13 @@ def handle(update, ctx):
     if update.message.left_chat_member.username == BOT_USERNAME:
         return None
 
+    return clean(update=update,
+                 ctx=ctx)
+
     group_id = update.effective_chat.id
     user_id = update.message.left_chat_member.id
+
+    print(ctx.user_data[group_id])
 
     User = Query()
 
