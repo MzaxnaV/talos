@@ -1,8 +1,7 @@
-from ..config import QUESTION_QUANTITY
+from ..config import QUESTION_QUANTITY, ERRORS_ALLOWED
 from telegram.ext import CallbackQueryHandler
-from ..lib.common import unmute_perms, db, user_exists
+from ..lib.common import unmute_perms, user_exists, clean
 from ..lib.captcha import Captcha, WrongAnswerError
-from tinydb import Query
 
 
 def resolve(update, ctx):
@@ -11,20 +10,17 @@ def resolve(update, ctx):
     user_id = update.effective_user.id
 
     # Validate that this should happen
-    group_id = 123
-    # if not user_exists(user_id=user_id,
-                       # group_id=group_id):
-        # return update.callback_query.answer('Oops! Invalid action')
+    if not user_exists(user_id=user_id,
+                       group_id=group_id):
+        return update.callback_query.answer('Oops! Invalid action')
     # Check if a captcha has been set
     try:
         captcha = ctx.user_data[group_id]
     except KeyError:
-        # Captcha not set - set it now
         captcha = ctx.user_data[group_id] = Captcha(
             total_iterations=QUESTION_QUANTITY,
-            errors_allowed=3,
+            errors_allowed=ERRORS_ALLOWED,
             group_id=group_id
-            # callback_data[2]
         )
 
     # Check if an answer is involved in the callback data
@@ -37,11 +33,11 @@ def resolve(update, ctx):
     except WrongAnswerError:
         # wrong answer
         captcha - 1
+        # If user has failed multiple attepts - kick
         if captcha.has_failed():
             kick(update, captcha.group_id)
-            clean(update, captcha.group_id)
             update.callback_query.answer(
-                'You have failed the captcha. You will now be kicked.'
+                "You've been kicked due to multiple incorrect answers."
             )
             return update.callback_query.message.delete()
         else:
@@ -53,8 +49,10 @@ def resolve(update, ctx):
     # Self explanatory - unmute the user
     if captcha.is_solved():
         unmute(update, captcha.group_id)
-        clean(update=update, group_id=captcha.group_id)
-        return
+        update.callback_query.answer("Congrats! You've been unmuted!")
+        clean(update=update, ctx=ctx,
+              group_id=captcha.group_id)
+        return update.callback_query.message.delete()
 
     try:
         update.callback_query.edit_message_text(
@@ -90,16 +88,6 @@ def unmute(update, group_id):
         print(str(e))
 
     return None
-
-
-# attempt to delete  the welcome message
-# and clean database entry
-def clean(update, group_id):
-    User = Query()
-    user_id = update.effective_chat.id
-    result = db.search(
-        (User.group_id == group_id) & (User.user_id == user_id)
-    )
 
 
 handler = CallbackQueryHandler(
