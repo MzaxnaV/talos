@@ -73,10 +73,10 @@ def get_captcha(group_id, user_id):
     }
 
 
-def clean(update, group_id=None):
+def clean(update, ctx, group_id=None):
     User = Query()
     if not group_id:
-        group_id = update.effecitve_chat.id
+        group_id = update.effective_chat.id
 
     try:
         bot = update.callback_query.bot
@@ -88,13 +88,11 @@ def clean(update, group_id=None):
     except AttributeError:
         user_id = update.effective_chat.id
 
-    result = db.search(
-        (User.group_id == group_id) & (User.user_id == user_id)
-    )
-    result = result[0]
-
     # Attempt to remove welcome message
     try:
+        result = db.search(
+            (User.group_id == group_id) & (User.user_id == user_id)
+        )[0]
         bot.delete_message(
             chat_id=group_id,
             message_id=result['message_id']
@@ -102,7 +100,15 @@ def clean(update, group_id=None):
     except Exception as e:
         print(str(e))
 
+    try:
+        del ctx.user_data[group_id]
+    except Exception as e:
+        print(str(e))
+
     # Remove database entry
-    db.remove(
-        doc_ids=[result['doc_id']]
-    )
+    try:
+        db.remove(
+            doc_ids=[result.doc_id]
+        )
+    except Exception as e:
+        print(str(e))
