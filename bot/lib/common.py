@@ -84,24 +84,26 @@ def clean(update, ctx, group_id=None):
         bot = update.message.bot
 
     try:
-        user_id = update.left_chat_member.id
+        user_id = update.message.left_chat_member.id
     except AttributeError:
         user_id = update.effective_chat.id
+
+    # Attempt to clear captcha object stored in user context data
+    try:
+        del ctx.user_data[group_id]
+    except Exception as e:
+        print(str(e))
 
     # Attempt to remove welcome message
     try:
         result = db.search(
             (User.group_id == group_id) & (User.user_id == user_id)
-        )[0]
+        )
+        result = result[0]
         bot.delete_message(
             chat_id=group_id,
             message_id=result['message_id']
         )
-    except Exception as e:
-        print(str(e))
-
-    try:
-        del ctx.user_data[group_id]
     except Exception as e:
         print(str(e))
 
