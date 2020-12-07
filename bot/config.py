@@ -7,7 +7,7 @@ BOT_USERNAME = os.getenv('BOT_USERNAME')
 BOT_MASTER = int(os.getenv('BOT_MASTER'))
 RULES_URI = os.getenv('RULES_URI')
 RULES_URI_HUMAN = os.getenv('RULES_URI_HUMAN')
-ENABLE_WELCOME_MSG = bool(os.getenv('ENABLE_WELCOME_MSG'))
+ENABLE_WELCOME_MSG = bool(int(os.getenv('ENABLE_WELCOME_MSG')))
 
 QUESTION_QUANTITY = int(os.getenv('QUESTION_QUANTITY'))
 ERRORS_ALLOWED = int(os.getenv('ERRORS_ALLOWED'))
