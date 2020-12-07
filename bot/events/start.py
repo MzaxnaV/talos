@@ -1,14 +1,17 @@
 from telegram.ext import CommandHandler, Filters
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from ..lib.common import db, user_exists
-from tinydb import Query
+from ..lib.common import user_exists
+from loguru import logger
 
 
 def resolve(update, ctx):
     try:
         update.message.delete()
     except Exception as e:
-        print(str(e))
+        logger.error(
+            (f'Removing start message failed for user'
+             f' {update.effective_user.id} due to {e}')
+        )
 
     user_id = update.effective_user.id
 

@@ -3,6 +3,7 @@ from telegram import (InlineKeyboardButton, InlineKeyboardMarkup,
 from telegram.utils.helpers import mention_markdown
 from tinydb import TinyDB, Query
 from ..config import RULES_URI, START_MSG
+from loguru import logger
 import requests
 import json
 import random
@@ -91,21 +92,26 @@ def clean(update, ctx, group_id=None):
     # Attempt to clear captcha object stored in user context data
     try:
         del ctx.user_data[group_id]
-    except Exception as e:
-        print(str(e))
+    except Exception:
+        pass
+
+    result = db.search(
+        (User.group_id == group_id) & (User.user_id == user_id)
+    )
+    if not len(result) > 0:
+        return False
+    result = result[0]
 
     # Attempt to remove welcome message
     try:
-        result = db.search(
-            (User.group_id == group_id) & (User.user_id == user_id)
-        )
-        result = result[0]
         bot.delete_message(
             chat_id=group_id,
             message_id=result['message_id']
         )
     except Exception as e:
-        print(str(e))
+        logger.error(
+            f'Could not delete initial message for {user_id}  due to {e}'
+        )
 
     # Remove database entry
     try:
@@ -113,4 +119,4 @@ def clean(update, ctx, group_id=None):
             doc_ids=[result.doc_id]
         )
     except Exception as e:
-        print(str(e))
+        logger.error(f'Record {result.doc_id} could not be deleted : {e}')

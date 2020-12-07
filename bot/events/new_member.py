@@ -2,22 +2,31 @@ from ..config import BOT_USERNAME, RULES_URI_HUMAN
 from telegram.ext import MessageHandler, Filters
 from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 from ..lib.common import db, mute_perms, get_mention
+from loguru import logger
 from tinydb import Query
 
 
 def handle(update, ctx):
     # Ignore if self
     if update.message.new_chat_members[0].username == BOT_USERNAME:
+        logger.info(f"Talos has been added to {update.effective_chat.id}")
         return None
 
     group_id = update.effective_chat.id
     user_id = update.message.new_chat_members[0].id
 
-    update.message.bot.restrict_chat_member(
-        chat_id=group_id,
-        user_id=user_id,
-        permissions=mute_perms
-    )
+    try:
+        update.message.bot.restrict_chat_member(
+            chat_id=group_id,
+            user_id=user_id,
+            permissions=mute_perms
+        )
+    except Exception as e:
+        logger.error(
+            (f'Muting user {update.effective_user.id} on Group {group_id}'
+             f' failed  due to {e}')
+        )
+        return False
 
     url = f't.me/{BOT_USERNAME}?start={update.effective_chat.id}'
     keyboard = [

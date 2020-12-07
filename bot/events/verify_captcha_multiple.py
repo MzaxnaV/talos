@@ -1,7 +1,8 @@
-from ..config import QUESTION_QUANTITY, ERRORS_ALLOWED
 from telegram.ext import CallbackQueryHandler
 from ..lib.common import unmute_perms, user_exists, clean
 from ..lib.captcha import Captcha, WrongAnswerError
+from ..config import QUESTION_QUANTITY, ERRORS_ALLOWED
+from loguru import logger
 
 
 def resolve(update, ctx):
@@ -72,8 +73,10 @@ def kick(update, group_id):
             user_id=update.effective_user.id
          )
     except Exception as e:
-        print(str(e))
-
+        logger.error(
+            (f'Kicking user {update.effective_user.id} from Group {group_id}'
+             f' failed  due to {e}')
+        )
     return None
 
 
@@ -85,7 +88,10 @@ def unmute(update, group_id):
             permissions=unmute_perms
         )
     except Exception as e:
-        print(str(e))
+        logger.error(
+            (f'Unmuting user {update.effective_user.id} on Group {group_id}'
+             f' failed  due to {e}')
+        )
 
     return None
 
