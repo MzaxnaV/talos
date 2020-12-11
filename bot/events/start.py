@@ -1,6 +1,7 @@
 from telegram.ext import CommandHandler, Filters
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 from ..lib.common import user_exists
+from ..config import RULES_URI_HUMAN
 from loguru import logger
 
 
@@ -31,7 +32,9 @@ def resolve(update, ctx):
         reply_markup=InlineKeyboardMarkup(
             [
                 [InlineKeyboardButton(text='Start',
-                                      callback_data=cb_data)]
+                                      callback_data=cb_data)],
+                [InlineKeyboardButton(text='Read the rules',
+                                      url=RULES_URI_HUMAN)]
             ]
         ),
         parse_mode='MARKDOWN'
