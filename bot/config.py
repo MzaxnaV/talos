@@ -15,8 +15,12 @@ ERRORS_ALLOWED = int(os.getenv('ERRORS_ALLOWED'))
 WELCOME_MSG = ('Hello {username}, welcome to the group. You have been muted.'
                '\nPlease follow the instructions to unmute yourself.')
 
-START_MSG = ('Hello there,\nYou have been muted.\nTo ensure smooth interaction'
-             ' in this community, you are required to read the rules and solve'
-             ' this captcha in order to verify that you have done the  same.\n'
-             'At which number is the following rule listed in @pyindiarules\n'
-             '\n*{question}*')
+START_MSG = ('*How do i solve the captcha?*\nYou will be shown '
+             'one or more rule(s) from our group rules. You must '
+             'pick the correct ordinal number of the rule.\n\n'
+             '*How many questions do i have to answer to be unmuted?*\n'
+             'You must answer all 3 questions correctly.\n\n'
+             '*How many attempts do i have?*\n'
+             'You have 3 attempts. If you get 3 answers wrong, you will '
+             'be kicked\n\n'
+             '*Click start to begin the captcha*')
