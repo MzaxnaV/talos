@@ -1,7 +1,9 @@
 from telegram.ext import CallbackQueryHandler
 from ..lib.common import unmute_perms, user_exists, clean
 from ..lib.captcha import Captcha, WrongAnswerError
-from ..config import QUESTION_QUANTITY, ERRORS_ALLOWED
+from ..config import (QUESTION_QUANTITY, ERRORS_ALLOWED, TZ,
+                      BAN_PERIOD)
+from datetime import datetime, timedelta
 from loguru import logger
 
 
@@ -67,10 +69,15 @@ def resolve(update, ctx):
 
 def kick(update, group_id):
     # Kick user
+    if BAN_PERIOD:
+        unban_date = datetime.now(tz=TZ) + timedelta(minutes=2)
+    else:
+        unban_date = 0
     try:
         update.callback_query.bot.kick_chat_member(
             chat_id=group_id,
-            user_id=update.effective_user.id
+            user_id=update.effective_user.id,
+            until_date=unban_date
          )
     except Exception as e:
         logger.error(
