@@ -27,7 +27,7 @@ START_MSG = ('*How do i solve the captcha?*\nYou will be shown '
              '*Click start to begin the captcha*')
 
 # Read the datetime.timezone documentation
-tz = timezone(timedelta(hours=5, minutes=30))
+TZ = timezone(timedelta(hours=5, minutes=30))
 # Ban period for users that failed captcha (in minutes)
 # If set to 0 it will be a perma ban until manually unbanned
 BAN_PERIOD = int(os.getenv('BAN_PERIOD'))
