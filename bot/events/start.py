@@ -1,6 +1,6 @@
 from telegram.ext import CommandHandler, Filters
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
-from ..lib.common import user_exists
+from ..lib.common import user_exists, captcha_exists
 from ..config import RULES_URI_HUMAN, START_MSG
 from loguru import logger
 
@@ -21,7 +21,7 @@ def resolve(update, ctx):
     except IndexError:
         return update.message.reply_text('I\'m just a captcha bot')
 
-    if not user_exists(user_id=user_id, group_id=group_id):
+    if not captcha_exists(user_id=user_id, group_id=group_id):
         return update.message.reply_text(
             'You do not have any captcha to solve in this group right now')
 

@@ -1,5 +1,5 @@
 from telegram.ext import CallbackQueryHandler
-from ..lib.common import unmute_perms, user_exists, clean
+from ..lib.common import unmute_perms, user_exists, clean, clean_new
 from ..lib.captcha import Captcha, WrongAnswerError
 from ..config import (QUESTION_QUANTITY, ERRORS_ALLOWED, TZ,
                       BAN_PERIOD)
@@ -53,7 +53,7 @@ def resolve(update, ctx):
     if captcha.is_solved():
         unmute(update, captcha.group_id)
         update.callback_query.answer("Congrats! You've been unmuted!")
-        clean(update=update, ctx=ctx,
+        clean_new(update=update, ctx=ctx,
               group_id=captcha.group_id)
         return update.callback_query.message.delete()
 
