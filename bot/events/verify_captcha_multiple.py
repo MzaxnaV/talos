@@ -60,7 +60,8 @@ def resolve(update, ctx):
     try:
         update.callback_query.edit_message_text(
             text=str(captcha),
-            reply_markup=captcha.answer_choices()
+            reply_markup=captcha.answer_choices(),
+            parse_mode="MARKDOWN"
         )
     except Exception as e:
         print(str(e))

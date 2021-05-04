@@ -47,7 +47,7 @@ def user_exists(user_id, group_id):
     return len(user)
 
 
-# Check if a captcah exists with specified user id and group id
+# Check if a captcha exists with specified user id and group id
 def captcha_exists(user_id, group_id):
     with orm.db_session:
         return orm.exists(u for u in Captcha if u.group_id == group_id
