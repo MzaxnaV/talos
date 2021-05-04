@@ -1,5 +1,5 @@
 from telegram.ext import CallbackQueryHandler
-from ..lib.common import unmute_perms, user_exists, clean, clean_new
+from ..lib.common import unmute_perms, clean_new, captcha_exists
 from ..lib.captcha import Captcha, WrongAnswerError
 from ..config import (QUESTION_QUANTITY, ERRORS_ALLOWED, TZ,
                       BAN_PERIOD)
@@ -13,7 +13,7 @@ def resolve(update, ctx):
     user_id = update.effective_user.id
 
     # Validate that this should happen
-    if not user_exists(user_id=user_id,
+    if not captcha_exists(user_id=user_id,
                        group_id=group_id):
         return update.callback_query.answer('Oops! Invalid action')
     # Check if a captcha has been set
