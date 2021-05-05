@@ -4,6 +4,7 @@ from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 from ..lib.common import db, mute_perms, get_mention
 from loguru import logger
 from tinydb import Query
+from ..lib.models import Captcha, orm
 
 
 def handle(update, ctx):
@@ -61,6 +62,9 @@ def handle(update, ctx):
             (User.group_id == group_id) & (User.user_id == user_id)
         )
     )
+    with orm.db_session:
+        Captcha(user_id=user_id, group_id=str(group_id), message_id=str(msgid))
+        orm.commit()
 
 
 handler = MessageHandler(Filters.status_update.new_chat_members, handle)

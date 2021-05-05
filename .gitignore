@@ -2,3 +2,7 @@
 .env
 __pycache__
 logs/*
+.db
+venv
+.vscode
+.idea

@@ -1,5 +1,5 @@
 from telegram.ext import CallbackQueryHandler
-from ..lib.common import unmute_perms, user_exists, clean
+from ..lib.common import unmute_perms, clean_new, captcha_exists
 from ..lib.captcha import Captcha, WrongAnswerError
 from ..config import (QUESTION_QUANTITY, ERRORS_ALLOWED, TZ,
                       BAN_PERIOD)
@@ -13,7 +13,7 @@ def resolve(update, ctx):
     user_id = update.effective_user.id
 
     # Validate that this should happen
-    if not user_exists(user_id=user_id,
+    if not captcha_exists(user_id=user_id,
                        group_id=group_id):
         return update.callback_query.answer('Oops! Invalid action')
     # Check if a captcha has been set
@@ -53,14 +53,15 @@ def resolve(update, ctx):
     if captcha.is_solved():
         unmute(update, captcha.group_id)
         update.callback_query.answer("Congrats! You've been unmuted!")
-        clean(update=update, ctx=ctx,
+        clean_new(update=update, ctx=ctx,
               group_id=captcha.group_id)
         return update.callback_query.message.delete()
 
     try:
         update.callback_query.edit_message_text(
             text=str(captcha),
-            reply_markup=captcha.answer_choices()
+            reply_markup=captcha.answer_choices(),
+            parse_mode="MARKDOWN"
         )
     except Exception as e:
         print(str(e))

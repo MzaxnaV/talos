@@ -1,6 +1,6 @@
 from telegram.ext import MessageHandler, Filters
 from ..config import BOT_USERNAME
-from ..lib.common import clean
+from ..lib.common import clean, clean_new
 from loguru import logger
 
 
@@ -18,8 +18,8 @@ def handle(update, ctx):
         )
         return None
 
-    return clean(update=update,
-                 ctx=ctx)
+    return clean_new(update=update,
+                     ctx=ctx)
 
 
 handler = MessageHandler(Filters.status_update.left_chat_member, handle)

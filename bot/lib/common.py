@@ -7,7 +7,7 @@ from loguru import logger
 import requests
 import json
 import random
-
+from .models import Captcha, orm
 
 db = TinyDB('.userdata')
 rules = json.loads(requests.get(RULES_URI).text)
@@ -38,12 +38,20 @@ def get_mention(user):
 
 # Check if a database entry  exists with the given
 # Group id and user id
+# For use with tinydb - will be removed
 def user_exists(user_id, group_id):
     User = Query()
     user = db.search(
         (User.group_id == group_id) & (User.user_id == user_id)
     )
     return len(user)
+
+
+# Check if a captcha exists with specified user id and group id
+def captcha_exists(user_id, group_id):
+    with orm.db_session:
+        return orm.exists(u for u in Captcha if u.group_id == group_id
+                          and user_id == user_id)
 
 
 def get_captcha(group_id, user_id):
@@ -74,6 +82,7 @@ def get_captcha(group_id, user_id):
     }
 
 
+# Clean method for use with tinydb - will  be removed
 def clean(update, ctx, group_id=None):
     User = Query()
     if not group_id:
@@ -120,3 +129,49 @@ def clean(update, ctx, group_id=None):
         )
     except Exception as e:
         logger.error(f'Record {result.doc_id} could not be deleted : {e}')
+
+
+# Clean method to work with sqlite
+def clean_new(update, ctx, group_id=None):
+    if not group_id:
+        group_id = update.effective_chat.id
+
+    try:
+        bot = update.callback_query.bot
+    except AttributeError:
+        bot = update.message.bot
+
+    try:
+        user_id = update.message.left_chat_member.id
+    except AttributeError:
+        user_id = update.effective_chat.id
+
+    # Attempt to clear captcha object stored in user context data
+    try:
+        del ctx.user_data[group_id]
+    except Exception:
+        pass
+
+    with orm.db_session:
+        result = Captcha.select(lambda c:  c.group_id == group_id and
+                                user_id == user_id).first()
+        if not result:
+            return False
+        print(result.user_id)
+
+        # Attempt to remove welcome message
+        try:
+            bot.delete_message(
+                chat_id=group_id,
+                message_id=result.message_id
+            )
+        except Exception as e:
+            logger.error(
+                f'Could not delete initial message for {user_id}  due to {e}'
+            )
+
+        # Remove database entry
+        try:
+            result.delete()
+        except Exception as e:
+            logger.error(f'Record {result.doc_id} could not be deleted : {e}')

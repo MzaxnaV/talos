@@ -2,6 +2,8 @@ from telegram import InlineKeyboardButton,  InlineKeyboardMarkup
 from .common import rules
 import random
 
+from ..config import RULES_URI_HUMAN
+
 
 class WrongAnswerError(Exception):
     pass
@@ -66,7 +68,9 @@ class Captcha:
 
     def __str__(self):
         return (f'Question {self.iteration+1}/{self.total_iterations}\n'
-                f'{self.questions[self.iteration]}\n')
+                '*Which one of the options given below correspond to this rule:*\n\n'
+                f'_{self.questions[self.iteration]}_\n\n'
+                f'GROUP RULES: {RULES_URI_HUMAN}')
 
     def answer_choices(self):
         callback = f'verify_captcha_{self.group_id}'
